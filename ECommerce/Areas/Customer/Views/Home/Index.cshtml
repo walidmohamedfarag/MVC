@@ -158,15 +158,15 @@
                     <ul class="pagination">
                         @if (@ViewBag.currentPage > 1)
                         {
-                            <li class="page-item"><a class="page-link" href="?page=@(ViewBag.currentPage - 1)">Previous</a></li>
+                            <li class="page-item"><a class="page-link" href="?page=@(ViewBag.currentPage - 1)&name=@ViewBag.name&minPrice=@ViewBag.minPrice&maxPrice=@ViewBag.maxPrice&categoryId=@ViewBag.categoryId&brandId=@ViewBag.brandId&isHot=@ViewBag.isHot">Previous</a></li>
                         }
                         @for (var i = 1; i <= ViewBag.totalPages; i++)
                         {
-                            <li class="page-item @(ViewBag.currentPage == i ? "active" : "")"><a class="page-link" href="?page=@i">@i</a></li>
+                            <li class="page-item @(ViewBag.currentPage == i ? "active" : "")"><a class="page-link" href="?page=@i&name=@ViewBag.name&minPrice=@ViewBag.minPrice&maxPrice=@ViewBag.maxPrice&categoryId=@ViewBag.categoryId&brandId=@ViewBag.brandId&isHot=@ViewBag.isHot">@i</a></li>
                         }
                         @if (@ViewBag.currentPage < ViewBag.totalPages)
                         {
-                            <li class="page-item"><a class="page-link" href="?page=@(ViewBag.currentPage + 1)">Next</a></li>
+                            <li class="page-item"><a class="page-link" href="?page=@(ViewBag.currentPage + 1)&name=@ViewBag.name&minPrice=@ViewBag.minPrice&maxPrice=@ViewBag.maxPrice&categoryId=@ViewBag.categoryId&brandId=@ViewBag.brandId&isHot=@ViewBag.isHot">Next</a></li>
                         }
                     </ul>
                 </nav>
