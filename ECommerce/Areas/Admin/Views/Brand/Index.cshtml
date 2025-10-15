@@ -1,12 +1,12 @@
-﻿@model IEnumerable<Categroy>
+﻿@model IEnumerable<Brand>
 
 <div class="container">
     <div class="row mb-3 align-items-center my-3">
         <div class="col-md-6">
-            <h2 class="display-6">All Categories</h2>
+            <h2 class="display-6">All Brands</h2>
         </div>
         <div class="col-md-6 text-md-end text-start mt-2 mt-md-0">
-            <a href="/Admin/Category/Create" class="btn btn-success">Create</a>
+            <a href="/Admin/Brand/Create" class="btn btn-success">Create</a>
         </div>
     </div>
 
@@ -23,7 +23,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach(var item in Model)
+                    @foreach (var item in Model)
                     {
                         <tr>
                             <th scope="row">@item.Id</th>
@@ -37,11 +37,10 @@
                                 <td><span class="badge text-bg-danger">InActive</span></td>
                             }
                             <td>
-                                <a href="/Admin/Category/Edit/@item.Id" type="button" class="btn btn-warning">Edit</a>
-                                <a href="/Admin/Category/Delete/@item.Id" class="btn btn-danger btn-delete">Delete</a>
-@*                                 <a href="/Admin/Product/Create?categoryId=@item.Id&brandId=@ViewBag.brandid" type="button" class="btn btn-primary">New Product</a>
- *@
-                            </td>
+                                <a href="/Admin/Brand/Edit/@item.Id" type="button" class="btn btn-warning">Edit</a>
+                                <a href="/Admin/Brand/Delete/@item.Id" class="btn btn-danger btn-delete">Delete</a>
+@*                                 <a href="/Admin/Category/Create?brandID=@item.Id" type="button" class="btn btn-primary">New Category</a>
+ *@                            </td>
                         </tr>
                     }
                 </tbody>
@@ -49,9 +48,9 @@
         </div>
     </div>
 </div>
- 
+
 <script>
-   
+
     document.addEventListener("DOMContentLoaded", function () {
         const deleteButtons = document.querySelectorAll(".btn-delete");
 
@@ -84,5 +83,5 @@
             });
         });
     });
- 
+
 </script>

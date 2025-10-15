@@ -1,0 +1,112 @@
+﻿@using ECommerce.ModelVM
+@model ProductVM
+
+﻿<div class="container">
+    <div class="row mb-3 align-items-center my-3">
+        <div class="col-md-6">
+            <h2 class="display-6">Create new Product</h2>
+        </div>
+    </div>
+
+    <div class="row my-3">
+        <div class="col-12">
+            <form method="post" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name</label>
+                    <input class="form-control" name="Name">
+                </div>
+                <div class="mb-3">
+                    <label for="price" class="form-label">Price</label>
+                    <input type="number" class="form-control" name="Price">
+                </div>
+                <div class="mb-3">
+                    <label for="discount" class="form-label">Discount</label>
+                    <input type="number" class="form-control" name="Discount">
+                </div>
+                <div class="mb-3">
+                    <label for="quantity" class="form-label">Quantity</label>
+                    <input type="number" class="form-control" name="Quantity">
+                </div>
+                <div class="mb-3">
+                    <label for="img" class="form-label">Main Image</label>
+                    <input type="file" class="form-control" name="img">
+                </div>
+                <div class="mb-3">
+                    <label for="subimgs" class="form-label">Sub Images</label>
+                    <input type="file" class="form-control" name="subImgs" multiple>
+                </div>
+                <div class="mb-3">
+                    <label for="Color" class="form-label">Color</label>
+
+                    <div id="colorContainer">
+                        <div class="mb-2 d-flex align-item-center">
+                            <input type="color" class="form-control form-control-color" name="colors">
+                        </div>
+                    </div>
+
+                    <button type="button" id="addButtonColor" class="btn btn-outline-primary">+ Add New Color</button>
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <div class="form-floating">
+                        <textarea class="form-control" placeholder="Leave a description here" style="height: 100px" name="Description"></textarea>
+                        <label for="description">You Description Here...</label>
+                    </div>
+
+                </div>
+                <div class="mb-3">
+                    <label for="Brand" class="form-label">Brand</label>
+                    <select name="BrandId" class="form-select">
+                        @foreach (var brand in Model.brands)
+                        {
+
+                            <option value="@brand.Id">@brand.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="Category" class="form-label">Category</label>
+                    <select name="CategroyId" class="form-select">
+                        @foreach (var category in Model.Categroys)
+                        {
+
+                            <option value="@category.Id">@category.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="status" class="form-label">Status</label>
+                    <select name="Status" class="form-select">
+                        <option value="true" selected>Active</option>
+                        <option value="false">InActive</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    const conateiner = document.getElementById('colorContainer');
+    const addBtn = document.getElementById('addButtonColor');
+
+    addBtn.addEventListener('click', () => {
+        var colorRow = document.createElement('div');
+
+        colorRow.className = 'mb-2 d-flex align-item-center'
+        colorRow.innerHTML = `
+            <input type="color" class="form-control form-control-color" name="Colors">
+            <button type="Button" class="btn btn-danger btn-sm removeColor">X</button>
+        `;
+
+        conateiner.appendChild(colorRow);
+    });
+
+    conateiner.addEventListener('click', (e) => {
+        if(e.target.classList.contains('removeColor')) {
+            e.target.parentElement.remove();
+        }
+    })
+</script>
