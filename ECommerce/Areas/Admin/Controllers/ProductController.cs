@@ -210,6 +210,7 @@ namespace ECommerce.Areas.Admin.Controllers
         {
             var product = context.Products.FirstOrDefault(b => b.Id == id);
             var subimgs = context.ProductSubImages.Where(p => p.ProductId == id);
+            var productColors = context.ProductColors.Where(p => p.ProductId == id);
             var oldPath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\images\Admin\ProductImg", product.MainImage);
             if (System.IO.File.Exists(oldPath))
                 System.IO.File.Delete(oldPath);
@@ -224,6 +225,12 @@ namespace ECommerce.Areas.Admin.Controllers
                 }
                 context.SaveChanges();
             }
+            if (productColors is not null)
+            {
+                foreach (var color in productColors)
+                    context.ProductColors.Remove(color);
+                context.SaveChanges();
+            }
             context.Remove(product);
             context.SaveChanges();
             return RedirectToAction(nameof(Index));
@@ -231,12 +238,16 @@ namespace ECommerce.Areas.Admin.Controllers
 
         public IActionResult DeleteSubImg(int productId, string img)
         {
-            var subimg= context.ProductSubImages.FirstOrDefault(p => p.ProductId == productId && p.Imge == img);
+            //get subimg from db
+            var subimg = context.ProductSubImages.FirstOrDefault(p => p.ProductId == productId && p.Imge == img);
+            //get old path of subimg
             var oldPath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\images\Admin\ProductImg\ProductSubImg", img);
             if (subimg is null)
                 return View("NotFoundPage", "Home");
+            //delete subimg from wwwroot
             if (System.IO.File.Exists(oldPath))
                 System.IO.File.Delete(oldPath);
+            //delete subimg from db
             context.ProductSubImages.Remove(subimg);
             context.SaveChanges();
             return RedirectToAction(nameof(Edit) , new {id = productId});
