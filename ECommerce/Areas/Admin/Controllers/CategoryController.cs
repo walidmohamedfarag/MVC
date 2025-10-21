@@ -1,14 +1,14 @@
-﻿using ECommerce.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿
+using System.Threading.Tasks;
 
 namespace ECommerce.Areas.Admin.Controllers
 {
     public class CategoryController : Controller
     {
-        ApplicationDBContext context = new();
-        public IActionResult Index()
+        Repositroy<Categroy> repo = new();
+        public async Task<IActionResult> Index(CancellationToken cancellationToken)
         {
-            var categories = context.Categroys;
+            var categories = await repo.GetAsync(cancellationToken: cancellationToken);
             return View(categories);
         }
         [HttpGet]
@@ -17,36 +17,36 @@ namespace ECommerce.Areas.Admin.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Create(Categroy categroy)
+        public async Task<IActionResult> Create(Categroy categroy,CancellationToken cancellationToken)
         {
             //ViewBag.brandid = brandID;
-            context.Categroys.Add(categroy);
-            context.SaveChanges();
+            await repo.AddAsync(categroy ,cancellationToken: cancellationToken);
+            await repo.CommitAsync(cancellationToken);
             return RedirectToAction(nameof(Index));
         }
     
         [HttpGet]
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id , CancellationToken cancellationToken)
         {
-            var category = context.Categroys.FirstOrDefault(c=>c.Id == id);
+            var category = await repo.GetOneAsync(c=>c.Id == id , cancellationToken : cancellationToken , tracked:false);
             if (category is null)
                 return View("NotFoundPage", "Home");
             return View(category);
         }
         [HttpPost]
-        public IActionResult Edit(Categroy categroy)
+        public async Task<IActionResult> Edit(Categroy categroy , CancellationToken cancellationToken)
         {
-            context.Categroys.Update(categroy);
-            context.SaveChanges();
+            repo.Update(categroy);
+            await repo.CommitAsync(cancellationToken);
             return RedirectToAction(nameof(Index));
         }
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id , CancellationToken cancellationToken)
         {
-            var categroy = context.Categroys.FirstOrDefault(c => c.Id == id);
+            var categroy = await repo.GetOneAsync(c => c.Id == id,cancellationToken:cancellationToken);
             if (categroy is null)
                 return View("NotFoundPage", "Home");
-            context.Categroys.Remove(categroy);
-            context.SaveChanges();
+            repo.Delete(categroy);
+            await repo.CommitAsync(cancellationToken);
             return RedirectToAction(nameof(Index));
         }
     }

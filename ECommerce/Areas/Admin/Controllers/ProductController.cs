@@ -1,46 +1,49 @@
-﻿using ECommerce.Models;
-using ECommerce.ModelVM;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
+﻿using System.Threading.Tasks;
 
 namespace ECommerce.Areas.Admin.Controllers
 {
     public class ProductController : Controller
     {
-        ApplicationDBContext context = new();
-        public IActionResult Index(string name, decimal? minPrice, decimal? maxPrice, int? categoryId, int? brandId, bool? lessQuantity, int page = 1)
+        //ApplicationDBContext context = new();
+        Repositroy<Product> productRepo = new();
+        Repositroy<Categroy> categoryRepo = new();
+        Repositroy<Brand> brandRepo = new();
+        Repositroy<ProductSubImage> subImageRepo = new();
+        Repositroy<ProductColor> productColorRepo = new();
+        
+        public async Task<IActionResult> Index(string name, decimal? minPrice, decimal? maxPrice, int? categoryId, int? brandId, bool? lessQuantity, CancellationToken cancellationToken, int page = 1)
         {
-            var product = context.Products.Include(p => p.Categroy).Include(p => p.Brand).AsQueryable();
+            var product =await productRepo.GetAsync(includes: [p=>p.Categroy , p=>p.Brand ] , cancellationToken: cancellationToken);
             if (name is not null)
-                product = product.Where(p => p.Name.Contains(name));
+                product =await productRepo.GetAsync(p => p.Name.Contains(name) , cancellationToken: cancellationToken);
             if (minPrice is not null)
-                product = product.Where(p => p.Price - (p.Price * (p.Discount / 100)) >= minPrice);
+                product = await productRepo.GetAsync(p => p.Price - (p.Price * (p.Discount / 100)) >= minPrice, cancellationToken: cancellationToken);
             if (maxPrice is not null)
-                product = product.Where(p => p.Price - (p.Price * (p.Discount / 100)) <= maxPrice);
+                product = await productRepo.GetAsync(p => p.Price - (p.Price * (p.Discount / 100)) <= maxPrice, cancellationToken: cancellationToken);
             if (categoryId is not null)
-                product = product.Where(p => p.CategroyId == categoryId);
+                product = await productRepo.GetAsync(p => p.CategroyId == categoryId, cancellationToken: cancellationToken);
             if (brandId is not null)
-                product = product.Where(p => p.BrandId == brandId);
+                product = await productRepo.GetAsync(p => p.BrandId == brandId, cancellationToken: cancellationToken);
             if (lessQuantity is not null)
-                product = product.Where(p => p.Quantity <= 100);
+                product = await productRepo.GetAsync(p => p.Quantity <= 100, cancellationToken: cancellationToken);
             ViewBag.name = name;
             ViewBag.minPrice = minPrice;
             ViewBag.maxPrice = maxPrice;
             ViewBag.categoryId = categoryId;
             ViewBag.brandId = brandId;
             ViewBag.lessQuantity = lessQuantity;
-            ViewBag.categories = context.Categroys;
-            ViewData["brands"] = context.Brands;
-            ViewBag.totalPages = Math.Ceiling(context.Products.Count() / 8.0);
+            ViewBag.categories = await categoryRepo.GetAsync();
+            ViewData["brands"] = await brandRepo.GetAsync();
+            ViewBag.totalPages = Math.Ceiling(product.Count() / 8.0);
             ViewBag.currentPage = page;
             product = product.Skip((page - 1) * 8).Take(8);
             return View(product);
         }
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create(CancellationToken cancellationToken)
         {
-            var brands = context.Brands;
-            var categories = context.Categroys;
+            var brands =await brandRepo.GetAsync(cancellationToken: cancellationToken);
+            var categories = await categoryRepo.GetAsync(cancellationToken: cancellationToken);
             return View(new ProductVM
             {
                 brands = brands,
@@ -48,7 +51,7 @@ namespace ECommerce.Areas.Admin.Controllers
             });
         }
         [HttpPost]
-        public IActionResult Create(Product product, IFormFile img, List<IFormFile> subImgs, string[] colors)
+        public async Task<IActionResult> Create(Product product, IFormFile img, List<IFormFile> subImgs, string[] colors , CancellationToken cancellationToken)
         {
             #region add product with main image
             if (img is not null && img.Length > 0)
@@ -61,8 +64,8 @@ namespace ECommerce.Areas.Admin.Controllers
                 }
                 product.MainImage = fileName;
             }
-            context.Products.Add(product);
-            context.SaveChanges();
+            await productRepo.AddAsync(product , cancellationToken : cancellationToken);
+            await productRepo.CommitAsync();
             #endregion
 
             #region add sub imges
@@ -78,13 +81,13 @@ namespace ECommerce.Areas.Admin.Controllers
                         {
                             simg.CopyTo(stream);
                         }
-                        context.ProductSubImages.Add(new ProductSubImage
+                        await subImageRepo.AddAsync(new ProductSubImage
                         {
                             Imge = imgName,
                             ProductId = product.Id
-                        });
+                        },cancellationToken : cancellationToken);
                     }
-                    context.SaveChanges();
+                    await subImageRepo.CommitAsync();
                 }
             }
             #endregion
@@ -94,29 +97,29 @@ namespace ECommerce.Areas.Admin.Controllers
             {
                 foreach (var color in colors)
                 {
-                    context.ProductColors.Add(new ProductColor
+                    await productColorRepo.AddAsync(new ProductColor
                     {
                         Color = color,
                         ProductId = product.Id
-                    });
+                    },cancellationToken);
                 }
-                context.SaveChanges();
+                await productColorRepo.CommitAsync();
             }
             #endregion
 
             return RedirectToAction(nameof(Index));
         }
         [HttpGet]
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id , CancellationToken cancellationToken)
         {
-            var product = context.Products.FirstOrDefault(b => b.Id == id);
+            var product = await productRepo.GetOneAsync(b => b.Id == id , cancellationToken: cancellationToken);
             if (product is null)
                 return View("NotFoundPage", "Home");
 
-            var brands = context.Brands;
-            var categories = context.Categroys;
-            var prductSubImgs = context.ProductSubImages.Where(p => p.ProductId == id);
-            var productColors = context.ProductColors.Where(pc => pc.ProductId == id);
+            var brands = await brandRepo.GetAsync(cancellationToken: cancellationToken);
+            var categories = await categoryRepo.GetAsync(cancellationToken: cancellationToken);
+            var prductSubImgs = await subImageRepo.GetAsync(p => p.ProductId == id , cancellationToken : cancellationToken);
+            var productColors = await productColorRepo.GetAsync(pc => pc.ProductId == id, cancellationToken: cancellationToken);
 
             return View(new ProductVM
             {
@@ -128,10 +131,10 @@ namespace ECommerce.Areas.Admin.Controllers
             });
         }
         [HttpPost]
-        public IActionResult Edit(Product product, string[] colors, IFormFile img, List<IFormFile> imgs)
+        public async Task<IActionResult> Edit(Product product, string[] colors, IFormFile img, List<IFormFile> imgs, CancellationToken cancellationToken)
         {
             #region edit main imge
-            var oldProduct = context.Products.AsNoTracking().FirstOrDefault(p => p.Id == product.Id);
+            var oldProduct = await productRepo.GetOneAsync(p => p.Id == product.Id,tracked:false , cancellationToken: cancellationToken);
             if (img is not null && img.Length > 0)
             {
                 var imgName = Guid.NewGuid().ToString() + Path.GetExtension(img.FileName);
@@ -147,22 +150,22 @@ namespace ECommerce.Areas.Admin.Controllers
             }
             else
                 product.MainImage = oldProduct.MainImage;
-            context.Update(product);
-            context.SaveChanges();
+            productRepo.Update(product);
+            await productRepo.CommitAsync();
             #endregion
 
             #region edit sub imges
             if (imgs is not null && imgs.Count > 0)
             {
-                var editSubImgs = context.ProductSubImages.Where(p => p.ProductId == product.Id);
+                var editSubImgs =await subImageRepo.GetAsync(p => p.ProductId == product.Id , cancellationToken: cancellationToken);
                 foreach (var oldSubImg in editSubImgs)
                 {
                     var oldPath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\images\Admin\ProductImg\ProductSubImg", oldSubImg.Imge);
                     if (System.IO.File.Exists(oldPath))
                         System.IO.File.Delete(oldPath);
-                    context.Remove(oldSubImg);
+                    subImageRepo.Delete(oldSubImg);
                 }
-                context.SaveChanges();
+                await subImageRepo.CommitAsync();
                 foreach (var simg in imgs)
                 {
                     if (simg.Length > 0)
@@ -173,44 +176,44 @@ namespace ECommerce.Areas.Admin.Controllers
                         {
                             simg.CopyTo(stream);
                         }
-                        context.ProductSubImages.Add(new ProductSubImage
+                        await subImageRepo.AddAsync(new ProductSubImage
                         {
                             Imge = imgName,
                             ProductId = product.Id
-                        });
+                        },cancellationToken);
                     }
                 }
-                context.SaveChanges();
+                await subImageRepo.CommitAsync();
             }
             #endregion
 
             #region edit colors
             if (colors.Length > 0 && colors is not null)
             {
-                var oldColors = context.ProductColors.Where(pc => pc.ProductId == product.Id);
+                var oldColors = await productColorRepo.GetAsync(pc => pc.ProductId == product.Id , cancellationToken: cancellationToken);
                 foreach (var oldColor in oldColors)
-                    context.Remove(oldColor);
-                context.SaveChanges();
+                    productColorRepo.Delete(oldColor);
+                await productColorRepo.CommitAsync(cancellationToken);
                 foreach (var color in colors)
                 {
-                    context.ProductColors.Add(new ProductColor
+                    await productColorRepo.AddAsync(new ProductColor
                     {
                         Color = color,
                         ProductId = product.Id
-                    });
+                    },cancellationToken);
                 }
-                context.SaveChanges();
+                await productColorRepo.CommitAsync(cancellationToken);
             }
             #endregion
 
             return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id , CancellationToken cancellationToken)
         {
-            var product = context.Products.FirstOrDefault(b => b.Id == id);
-            var subimgs = context.ProductSubImages.Where(p => p.ProductId == id);
-            var productColors = context.ProductColors.Where(p => p.ProductId == id);
+            var product = await productRepo.GetOneAsync(b => b.Id == id , cancellationToken: cancellationToken);
+            var subimgs = await subImageRepo.GetAsync(p => p.ProductId == id,cancellationToken: cancellationToken);
+            var productColors = await productColorRepo.GetAsync(p => p.ProductId == id, cancellationToken: cancellationToken);
             var oldPath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\images\Admin\ProductImg", product.MainImage);
             if (System.IO.File.Exists(oldPath))
                 System.IO.File.Delete(oldPath);
@@ -221,25 +224,25 @@ namespace ECommerce.Areas.Admin.Controllers
                     var oldSubPath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\images\Admin\ProductImg\ProductSubImg", subimg.Imge);
                     if (System.IO.File.Exists(oldSubPath))
                         System.IO.File.Delete(oldSubPath);
-                    context.ProductSubImages.Remove(subimg);
+                    subImageRepo.Delete(subimg);
                 }
-                context.SaveChanges();
+                await subImageRepo.CommitAsync(cancellationToken);
             }
             if (productColors is not null)
             {
                 foreach (var color in productColors)
-                    context.ProductColors.Remove(color);
-                context.SaveChanges();
+                    productColorRepo.Delete(color);
+                await productColorRepo.CommitAsync(cancellationToken);
             }
-            context.Remove(product);
-            context.SaveChanges();
+            productRepo.Delete(product);
+            await productRepo.CommitAsync(cancellationToken);
             return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult DeleteSubImg(int productId, string img)
+        public async Task<IActionResult> DeleteSubImg(int productId, string img , CancellationToken cancellationToken)
         {
             //get subimg from db
-            var subimg = context.ProductSubImages.FirstOrDefault(p => p.ProductId == productId && p.Imge == img);
+            var subimg = await subImageRepo.GetOneAsync(p => p.ProductId == productId && p.Imge == img,cancellationToken: cancellationToken);
             //get old path of subimg
             var oldPath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\images\Admin\ProductImg\ProductSubImg", img);
             if (subimg is null)
@@ -248,8 +251,8 @@ namespace ECommerce.Areas.Admin.Controllers
             if (System.IO.File.Exists(oldPath))
                 System.IO.File.Delete(oldPath);
             //delete subimg from db
-            context.ProductSubImages.Remove(subimg);
-            context.SaveChanges();
+            subImageRepo.Delete(subimg);
+            await subImageRepo.CommitAsync(cancellationToken);
             return RedirectToAction(nameof(Edit) , new {id = productId});
         }
     }

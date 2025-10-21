@@ -1,13 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ECommerce.Models;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ECommerce.Areas.Admin.Controllers
 {
     public class BrandController : Controller
     {
-        ApplicationDBContext context = new();
-        public IActionResult Index()
+        Repositroy<Brand> repo = new();
+        public async Task<IActionResult> Index(CancellationToken cancellationToken)
         {
-            var brands = context.Brands.ToList();
+            var brands =await repo.GetAsync(tracked: false , cancellationToken: cancellationToken);
             return View(brands);
         }
         [HttpGet]
@@ -16,7 +19,7 @@ namespace ECommerce.Areas.Admin.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Create(Brand brand, IFormFile img)
+        public async Task<IActionResult> Create(Brand brand, IFormFile img , CancellationToken cancellationToken)
         {
             if (img is not null && img.Length > 0)
             {
@@ -28,22 +31,22 @@ namespace ECommerce.Areas.Admin.Controllers
                 }
                 brand.Image = fileName;
             }
-            context.Brands.Add(brand);
-            context.SaveChanges();
+            await repo.AddAsync(brand, cancellationToken: cancellationToken);
+            await repo.CommitAsync(cancellationToken);
             return RedirectToAction(nameof(Index));
         }
         [HttpGet]
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id , CancellationToken cancellationToken)
         {
-            var brand = context.Brands.FirstOrDefault(b => b.Id == id);
+            var brand =await repo.GetOneAsync(b => b.Id == id , cancellationToken:cancellationToken);
             if (brand is null)
                 return View("NotFoundPage", "Home");
             return View(brand);
         }
         [HttpPost]
-        public IActionResult Edit(Brand brand,IFormFile? img)
+        public async Task<IActionResult> Edit(Brand brand,IFormFile? img, CancellationToken cancellationToken)
         {
-            var brandInDb = context.Brands.AsNoTracking().FirstOrDefault(b => b.Id == brand.Id);
+            var brandInDb = await repo.GetOneAsync(b => b.Id == brand.Id, cancellationToken: cancellationToken , tracked:false);
             if(brandInDb is null)
                 return View("NotFoundPage", "Home");
             if (img is not null && img.Length > 0)
@@ -61,19 +64,19 @@ namespace ECommerce.Areas.Admin.Controllers
             }
             else
                 brand.Image = brandInDb.Image;
-            context.Update(brand);
-            context.SaveChanges();
+            repo.Update(brand);
+            await repo.CommitAsync(cancellationToken);
             return RedirectToAction(nameof(Index));
         }
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id , CancellationToken cancellationToken)
         {
-            var brand = context.Brands.FirstOrDefault(b => b.Id == id);
+            var brand = await repo.GetOneAsync(b => b.Id == id);
             var oldPath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\Images\Admin\BrandImg", brand.Image);
             if (System.IO.File.Exists(oldPath))
                 System.IO.File.Delete(oldPath);
 
-            context.Remove(brand);
-            context.SaveChanges();
+            repo.Delete(brand);
+            await repo.CommitAsync(cancellationToken);
             return RedirectToAction(nameof(Index));
         }
     }
