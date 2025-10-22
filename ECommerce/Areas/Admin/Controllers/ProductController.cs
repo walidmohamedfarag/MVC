@@ -4,13 +4,20 @@ namespace ECommerce.Areas.Admin.Controllers
 {
     public class ProductController : Controller
     {
-        //ApplicationDBContext context = new();
-        Repositroy<Product> productRepo = new();
-        Repositroy<Categroy> categoryRepo = new();
-        Repositroy<Brand> brandRepo = new();
-        Repositroy<ProductSubImage> subImageRepo = new();
-        Repositroy<ProductColor> productColorRepo = new();
-        
+        IRepositroy<Product> productRepo;
+        IRepositroy<Categroy> categoryRepo;
+        IRepositroy<Brand> brandRepo;
+        IRepositroy<ProductColor> productColorRepo;
+        IRepositroy<ProductSubImage> subImageRepo;
+        public ProductController(Repositroy<Product> _productRepo , IRepositroy<ProductSubImage> _subImageRepo , IRepositroy<Brand> _brandRepo , IRepositroy<ProductColor> _productColorRepo , Repositroy<Categroy> _categoryRepo)
+        {
+            productRepo = _productRepo;
+            subImageRepo = _subImageRepo;
+            brandRepo = _brandRepo;
+            productColorRepo = _productColorRepo;
+            categoryRepo = _categoryRepo;
+        }
+
         public async Task<IActionResult> Index(string name, decimal? minPrice, decimal? maxPrice, int? categoryId, int? brandId, bool? lessQuantity, CancellationToken cancellationToken, int page = 1)
         {
             var product =await productRepo.GetAsync(includes: [p=>p.Categroy , p=>p.Brand ] , cancellationToken: cancellationToken);

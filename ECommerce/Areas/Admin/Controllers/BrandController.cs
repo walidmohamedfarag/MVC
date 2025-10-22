@@ -7,7 +7,12 @@ namespace ECommerce.Areas.Admin.Controllers
 {
     public class BrandController : Controller
     {
-        Repositroy<Brand> repo = new();
+        private readonly IRepositroy<Brand> repo;
+
+        public BrandController(IRepositroy<Brand> _repo)
+        {
+            repo = _repo;
+        }
         public async Task<IActionResult> Index(CancellationToken cancellationToken)
         {
             var brands =await repo.GetAsync(tracked: false , cancellationToken: cancellationToken);

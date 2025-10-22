@@ -2,7 +2,7 @@
 
 namespace ECommerce.Repositries
 {
-    public class Repositroy<T> where T : class
+    public class Repositroy<T> : IRepositroy<T> where T : class 
     {
         private readonly ApplicationDBContext context = new();
 

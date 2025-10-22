@@ -5,7 +5,13 @@ namespace ECommerce.Areas.Admin.Controllers
 {
     public class CategoryController : Controller
     {
-        Repositroy<Categroy> repo = new();
+        private readonly IRepositroy<Categroy> repo;
+
+        public CategoryController(IRepositroy<Categroy> _repo)
+        {
+            repo = _repo;
+        }
+
         public async Task<IActionResult> Index(CancellationToken cancellationToken)
         {
             var categories = await repo.GetAsync(cancellationToken: cancellationToken);
