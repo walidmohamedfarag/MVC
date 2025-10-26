@@ -4,13 +4,15 @@ namespace ECommerce.Areas.Admin.Controllers
 {
     public class ProductController : Controller
     {
+        private readonly ApplicationDBContext context;
         IRepositroy<Product> productRepo;
         IRepositroy<Categroy> categoryRepo;
         IRepositroy<Brand> brandRepo;
         IRepositroy<ProductColor> productColorRepo;
         IRepositroy<ProductSubImage> subImageRepo;
-        public ProductController(Repositroy<Product> _productRepo , IRepositroy<ProductSubImage> _subImageRepo , IRepositroy<Brand> _brandRepo , IRepositroy<ProductColor> _productColorRepo , Repositroy<Categroy> _categoryRepo)
+        public ProductController(ApplicationDBContext _context,IRepositroy<Product> _productRepo , IRepositroy<ProductSubImage> _subImageRepo , IRepositroy<Brand> _brandRepo , IRepositroy<ProductColor> _productColorRepo , IRepositroy<Categroy> _categoryRepo)
         {
+            context = _context;
             productRepo = _productRepo;
             subImageRepo = _subImageRepo;
             brandRepo = _brandRepo;

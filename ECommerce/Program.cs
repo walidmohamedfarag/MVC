@@ -10,12 +10,8 @@ namespace ECommerce
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-
-            builder.Services.AddScoped<IRepositroy<Brand>, Repositroy<Brand>>();
-            builder.Services.AddScoped<IRepositroy<Categroy>, Repositroy<Categroy>>();
-            builder.Services.AddScoped<IRepositroy<Product>, Repositroy<Product>>();
-            builder.Services.AddScoped<IRepositroy<ProductSubImage>, Repositroy<ProductSubImage>>();
-            builder.Services.AddScoped<IRepositroy<ProductColor>, Repositroy<ProductColor>>();
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+            builder.Services.RegisterConfig(connectionString);
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

@@ -4,11 +4,12 @@ namespace ECommerce.Repositries
 {
     public class Repositroy<T> : IRepositroy<T> where T : class 
     {
-        private readonly ApplicationDBContext context = new();
+        private readonly ApplicationDBContext context;
 
         private DbSet<T> dbSet;
-        public Repositroy()
+        public Repositroy(ApplicationDBContext _context)
         {
+            context = _context;
             dbSet = context.Set<T>();
         }
         public async Task<IEnumerable<T>> GetAsync(

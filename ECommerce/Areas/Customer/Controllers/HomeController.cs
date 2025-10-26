@@ -7,9 +7,10 @@ namespace ECommerce.Areas.Customer.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private ApplicationDBContext context = new();
-        public HomeController(ILogger<HomeController> logger)
+        private readonly ApplicationDBContext context; //= new();
+        public HomeController(ILogger<HomeController> logger , ApplicationDBContext _context)
         {
+            context = _context;
             _logger = logger;
         }
 
