@@ -23,7 +23,7 @@ namespace ECommerce
             {
                 option.UseSqlServer(connection);
             });
-
+            services.AddScoped<IRepositroy<ApplicationUserOtp>, Repositroy<ApplicationUserOtp>>();
         }
     }
 }
