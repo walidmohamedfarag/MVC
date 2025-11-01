@@ -4,6 +4,7 @@ using ECommerce.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ECommerce.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20251026141433_AddIdentityTabels")]
+    partial class AddIdentityTabels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -122,7 +125,7 @@ namespace ECommerce.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Brands", (string)null);
+                    b.ToTable("Brands");
                 });
 
             modelBuilder.Entity("ECommerce.Models.Categroy", b =>
@@ -145,7 +148,7 @@ namespace ECommerce.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categroys", (string)null);
+                    b.ToTable("Categroys");
                 });
 
             modelBuilder.Entity("ECommerce.Models.Product", b =>
@@ -194,7 +197,7 @@ namespace ECommerce.Migrations
 
                     b.HasIndex("CategroyId");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("ECommerce.Models.ProductColor", b =>
@@ -207,7 +210,7 @@ namespace ECommerce.Migrations
 
                     b.HasKey("Color", "ProductId");
 
-                    b.ToTable("ProductColors", (string)null);
+                    b.ToTable("ProductColors");
                 });
 
             modelBuilder.Entity("ECommerce.Models.ProductSubImage", b =>
@@ -220,7 +223,7 @@ namespace ECommerce.Migrations
 
                     b.HasKey("ProductId", "Imge");
 
-                    b.ToTable("ProductSubImages", (string)null);
+                    b.ToTable("ProductSubImages");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

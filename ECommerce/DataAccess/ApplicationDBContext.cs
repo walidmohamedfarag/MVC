@@ -1,8 +1,9 @@
 ﻿
 
+
 namespace ECommerce.DataAccess
 {
-    public class ApplicationDBContext : DbContext
+    public class ApplicationDBContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options) : base(options)
         {
@@ -20,6 +21,7 @@ namespace ECommerce.DataAccess
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ProductSubImageConfiguration).Assembly);
+           base.OnModelCreating(modelBuilder);
         }
     }
 }
