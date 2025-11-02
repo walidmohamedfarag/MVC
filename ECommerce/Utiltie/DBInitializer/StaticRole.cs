@@ -2,9 +2,9 @@
 {
     public class StaticRole
     {
-        public static string SUPER_ADMIN = "SuperAdmin";
-        public static string ADMIN = "Admin";
-        public static string EMPLOYEE = "Employee";
-        public static string CUSTOMER = "Customer";
+        public const string SUPER_ADMIN = "SuperAdmin";
+        public const string ADMIN = "Admin";
+        public const string EMPLOYEE = "Employee";
+        public const string CUSTOMER = "Customer";
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace ECommerce.Utiltie.DBInitializer
+﻿using Microsoft.IdentityModel.Tokens;
+
+namespace ECommerce.Utiltie.DBInitializer
 {
     public class DBInitializer : IDBInitializer
     {
@@ -22,7 +24,7 @@
             {
                 if (DBContext.Database.GetPendingMigrations().Any())
                     DBContext.Database.Migrate();
-                if (roleManager.Roles.Any())
+                if (roleManager.Roles.IsNullOrEmpty())
                 {
                     roleManager.CreateAsync(new(StaticRole.SUPER_ADMIN)).GetAwaiter().GetResult();
                     roleManager.CreateAsync(new(StaticRole.ADMIN)).GetAwaiter().GetResult();
