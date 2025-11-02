@@ -1,4 +1,3 @@
-using ECommerce.Repositries;
 
 namespace ECommerce
 {
@@ -13,7 +12,9 @@ namespace ECommerce
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
             builder.Services.RegisterConfig(connectionString);
             var app = builder.Build();
-
+            var scope = app.Services.CreateScope();
+            var service = scope.ServiceProvider.GetService<IDBInitializer>();
+            service!.Initialize();
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {

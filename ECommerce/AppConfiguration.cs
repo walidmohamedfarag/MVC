@@ -1,4 +1,5 @@
 ﻿using ECommerce.Utiltie;
+using ECommerce.Utiltie.DBInitializer;
 
 namespace ECommerce
 {
@@ -24,6 +25,7 @@ namespace ECommerce
                 option.UseSqlServer(connection);
             });
             services.AddScoped<IRepositroy<ApplicationUserOtp>, Repositroy<ApplicationUserOtp>>();
+            services.AddScoped<IDBInitializer, DBInitializer>();
         }
     }
 }

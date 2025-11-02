@@ -88,6 +88,11 @@ namespace ECommerce.Areas.Identity.Controllers
                 TempData["error-notification"] = "Invalid Your Email Or Password";
                 return View(login);
             }
+            if (!user.EmailConfirmed)
+            {
+                TempData["error-notification"] = "Please Confirm Your Email First";
+                return View(login);
+            }
             var checkPass = await signInManager.PasswordSignInAsync(user, login.Password, true, true);
             if (!checkPass.Succeeded)
             {
@@ -115,7 +120,7 @@ namespace ECommerce.Areas.Identity.Controllers
             }
             var since = DateTime.Now.AddHours(24);
             var otps = await applicationOtpRepo.GetAsync(o=>o.UserId ==  user.Id && o.CreateAt < since ,tracked:false, cancellationToken:cancellationToken);
-            if(otps.Count() > 3)
+            if(otps.Count() >= 3)
             {
                 TempData["error-notification"] = "You Have Reached The Maximum Number Of OTP Requests. Please Try Again Later.";
                 return View();
@@ -176,6 +181,27 @@ namespace ECommerce.Areas.Identity.Controllers
             }
             TempData["success-notification"] = "Password Reset Successfully";
             return RedirectToAction(nameof(Login));
+        }
+        [HttpGet]
+        public IActionResult ResendEmailConfirmation()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> ResendEmailConfirmation(string email)
+        {
+            var user = await userManager.FindByEmailAsync(email);
+            if(user is null)
+            {
+                TempData["error-notification"] = "Invalid Email, Please Enter The Correct Email..";
+                ViewBag.email = email;
+                return View();
+            }
+            var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+            var link = Url.Action(nameof(EmailConfirmation), "Register", new {area = "Identity", token, userId = user.Id },Request.Scheme);
+            await emailSender.SendEmailAsync(email, "ECommerce Resend Email Confirmation ", $"<h1> To Confirm Your Email Click <a href='{link}'>Here</a></h1>");
+            TempData["success-notification"] = "Resend Confirmation Successfully";
+            return View();
         }
     }
 }
