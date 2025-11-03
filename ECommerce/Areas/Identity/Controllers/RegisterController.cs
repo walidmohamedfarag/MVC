@@ -91,17 +91,18 @@ namespace ECommerce.Areas.Identity.Controllers
             if (!user.EmailConfirmed)
             {
                 TempData["error-notification"] = "Please Confirm Your Email First";
-                return View(login);
+                return RedirectToAction(nameof(login));
             }
             var checkPass = await signInManager.PasswordSignInAsync(user, login.Password, true, true);
             if (!checkPass.Succeeded)
             {
                 if (checkPass.IsLockedOut)
-                    TempData["error-notification"] = "Invalid Your Email Or Password";
+                    TempData["error-notification"] = "Your Blocked";
                 else
                     TempData["error-notification"] = "Invalid Your Email Or Password";
+                return RedirectToAction(nameof(login));
             }
-            TempData["success-notification"] = "Login Successfully";
+            TempData["success-notification"] = $"Login Successfully ,{user.FirstName} {user.LastName} Your Welcom In E-Commerce";
             return RedirectToAction("Index", "Home", new { area = "Customer" });
         }
 

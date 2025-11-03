@@ -1,4 +1,6 @@
 
+using ECommerce.MapsterConfigration;
+
 namespace ECommerce
 {
     public class Program
@@ -11,6 +13,7 @@ namespace ECommerce
             builder.Services.AddControllersWithViews();
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
             builder.Services.RegisterConfig(connectionString);
+            builder.Services.RegisterMaps();
             var app = builder.Build();
             var scope = app.Services.CreateScope();
             var service = scope.ServiceProvider.GetService<IDBInitializer>();

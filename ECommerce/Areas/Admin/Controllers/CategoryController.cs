@@ -36,7 +36,7 @@ namespace ECommerce.Areas.Admin.Controllers
         {
             var category = await repo.GetOneAsync(c=>c.Id == id , cancellationToken : cancellationToken , tracked:false);
             if (category is null)
-                return View("NotFoundPage", "Home");
+                return View("NotFoundPage");
             return View(category);
         }
         [HttpPost]
@@ -50,7 +50,7 @@ namespace ECommerce.Areas.Admin.Controllers
         {
             var categroy = await repo.GetOneAsync(c => c.Id == id,cancellationToken:cancellationToken);
             if (categroy is null)
-                return View("NotFoundPage", "Home");
+                return View("NotFoundPage");
             repo.Delete(categroy);
             await repo.CommitAsync(cancellationToken);
             return RedirectToAction(nameof(Index));

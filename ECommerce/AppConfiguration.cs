@@ -14,6 +14,12 @@ namespace ECommerce
             })
                 .AddEntityFrameworkStores<ApplicationDBContext>()
                 .AddDefaultTokenProviders();
+            services.ConfigureApplicationCookie(option =>
+            {
+                option.LoginPath = "/Identity/Register/Login";
+                option.AccessDeniedPath = "/Admin/Admin/AccessDenied";
+
+            });
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddScoped<IRepositroy<Brand>, Repositroy<Brand>>();
             services.AddScoped<IRepositroy<Categroy>, Repositroy<Categroy>>();
