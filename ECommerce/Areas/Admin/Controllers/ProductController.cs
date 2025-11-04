@@ -123,7 +123,7 @@ namespace ECommerce.Areas.Admin.Controllers
         {
             var product = await productRepo.GetOneAsync(b => b.Id == id , cancellationToken: cancellationToken);
             if (product is null)
-                return View("NotFoundPage", "Home");
+                return View("NotFoundPage");
 
             var brands = await brandRepo.GetAsync(cancellationToken: cancellationToken);
             var categories = await categoryRepo.GetAsync(cancellationToken: cancellationToken);
@@ -255,7 +255,7 @@ namespace ECommerce.Areas.Admin.Controllers
             //get old path of subimg
             var oldPath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\images\Admin\ProductImg\ProductSubImg", img);
             if (subimg is null)
-                return View("NotFoundPage", "Home");
+                return View("NotFoundPage");
             //delete subimg from wwwroot
             if (System.IO.File.Exists(oldPath))
                 System.IO.File.Delete(oldPath);

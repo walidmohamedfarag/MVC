@@ -45,7 +45,7 @@ namespace ECommerce.Areas.Admin.Controllers
         {
             var brand =await repo.GetOneAsync(b => b.Id == id , cancellationToken:cancellationToken);
             if (brand is null)
-                return View("NotFoundPage", "Home");
+                return View("NotFoundPage");
             return View(brand);
         }
         [HttpPost]
@@ -53,7 +53,7 @@ namespace ECommerce.Areas.Admin.Controllers
         {
             var brandInDb = await repo.GetOneAsync(b => b.Id == brand.Id, cancellationToken: cancellationToken , tracked:false);
             if(brandInDb is null)
-                return View("NotFoundPage", "Home");
+                return View("NotFoundPage");
             if (img is not null && img.Length > 0)
             {
                 var fileName = Guid.NewGuid().ToString() + Path.GetExtension(img.FileName);

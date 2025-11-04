@@ -68,5 +68,9 @@ namespace ECommerce.Areas.Identity.Controllers
             await signInManager.SignOutAsync();
             return RedirectToAction("Login", "Register", new { area = "Identity" });
         }
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
     }
 }

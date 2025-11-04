@@ -17,7 +17,7 @@ namespace ECommerce
             services.ConfigureApplicationCookie(option =>
             {
                 option.LoginPath = "/Identity/Register/Login";
-                option.AccessDeniedPath = "/Admin/Admin/AccessDenied";
+                option.AccessDeniedPath = "/Identity/Profile/AccessDenied";
 
             });
             services.AddTransient<IEmailSender, EmailSender>();
