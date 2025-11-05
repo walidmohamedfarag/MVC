@@ -50,6 +50,7 @@ namespace ECommerce.Areas.Customer.Controllers
             products = products.Skip((page - 1) * 8).Take(8);
             return View(products);
         }
+        [Authorize]
         public async Task<IActionResult> Item(int id , CancellationToken cancellationToken)
         {
             var product = await productRepo.GetOneAsync(p => p.Id == id, includes: [p => p.Categroy, p => p.Brand], tracked: false, cancellationToken: cancellationToken);
