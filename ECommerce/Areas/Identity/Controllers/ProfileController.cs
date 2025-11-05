@@ -33,8 +33,15 @@ namespace ECommerce.Areas.Identity.Controllers
             user.UserName = $"{user.FirstName}{user.LastName}{new Random().Next(0,10)}";
             user.PhoneNumber = updateProfileVM.PhoneNumber;
             user.Address = updateProfileVM.Address;
-          
-            await userManager.UpdateAsync(user);
+            var result = await userManager.UpdateAsync(user);
+            if(!result.Succeeded)
+            {
+                StringBuilder errors = new();
+                foreach (var item in result.Errors)
+                    errors.AppendLine(item.Description);
+                TempData["error-notification"] = errors.ToString();
+            }
+            await signInManager.RefreshSignInAsync(user);
             TempData["success-notification"] = "Profile Updated Successfully";
             return RedirectToAction("Index" , "Home" , new {area="Customer"});
         }
