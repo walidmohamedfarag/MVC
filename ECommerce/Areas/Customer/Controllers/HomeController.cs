@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Threading.Tasks;
 using ECommerce.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,9 +9,12 @@ namespace ECommerce.Areas.Customer.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDBContext context; //= new();
-        public HomeController(ILogger<HomeController> logger , ApplicationDBContext _context)
+        private readonly IRepositroy<Product> productRepo;
+
+        public HomeController(ILogger<HomeController> logger , ApplicationDBContext _context , IRepositroy<Product> _productRepo)
         {
             context = _context;
+            productRepo = _productRepo;
             _logger = logger;
         }
 
@@ -46,7 +50,18 @@ namespace ECommerce.Areas.Customer.Controllers
             products = products.Skip((page - 1) * 8).Take(8);
             return View(products);
         }
-
+        public async Task<IActionResult> Item(int id , CancellationToken cancellationToken)
+        {
+            var product = await productRepo.GetOneAsync(p => p.Id == id, includes: [p => p.Categroy, p => p.Brand], tracked: false, cancellationToken: cancellationToken);
+            if (product == null)
+                return View("NotFoundPage");
+            var relatedProducts = await productRepo.GetAsync(p => p.Name.Contains(product.Name) && p.Id != id, cancellationToken: cancellationToken);
+            return View(new ProductVM 
+            {
+                product = product,
+                RealatedProduct = relatedProducts.Skip(0).Take(4).ToList()
+            });
+        }
         public IActionResult Privacy()
         {
             return View();

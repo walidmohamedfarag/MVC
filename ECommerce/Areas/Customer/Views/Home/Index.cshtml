@@ -81,17 +81,6 @@
                                 }
                             </select>
                         </div>
-
-                        <!-- Rating -->
-                        @* <div class="col-md-2"> *@
-                        @*     <select name="rating" class="form-control"> *@
-                        @*         <option value="">Any Rating</option> *@
-                        @*         <option>option 1</option> *@
-                        @*         <option>option 2</option> *@
-                        @*         <option>option 3</option> *@
-                        @*     </select> *@
-                        @* </div> *@
-
                         <!-- Hot Product Checkbox -->
                         <div class="col-md-1">
                             <div class="form-check">
@@ -152,7 +141,7 @@
                             </div>
                             <!-- Product actions-->
                             <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a></div>
+                                <div class="text-center"><a class="btn btn-outline-dark mt-auto" asp-action="Item" asp-controller="Home" asp-area="Customer" asp-route-id="@item.Id">Show Details</a></div>
                             </div>
                         </div>
                     </div>

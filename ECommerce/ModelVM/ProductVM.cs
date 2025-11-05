@@ -6,6 +6,8 @@
         public IEnumerable<Categroy> Categroys { get; set; }
         public IEnumerable<ProductSubImage> ProductSubImages { get; set; }
         public Product? product { get; set; }
+        public List<Product> RealatedProduct { get; set; }
+
         public IEnumerable<ProductColor>? productColors { get; set; }
     }
 }
