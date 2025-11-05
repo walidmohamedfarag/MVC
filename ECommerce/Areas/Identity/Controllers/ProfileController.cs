@@ -1,5 +1,6 @@
 ﻿using Mapster;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -29,11 +30,13 @@ namespace ECommerce.Areas.Identity.Controllers
             var user = await userManager.GetUserAsync(User);
             user!.FirstName = updateProfileVM.FullName.Split(' ')[0];
             user.LastName = updateProfileVM.FullName.Split(' ')[1];
+            user.UserName = $"{user.FirstName}{user.LastName}{new Random().Next(0,10)}";
             user.PhoneNumber = updateProfileVM.PhoneNumber;
             user.Address = updateProfileVM.Address;
+          
             await userManager.UpdateAsync(user);
             TempData["success-notification"] = "Profile Updated Successfully";
-            return RedirectToAction(nameof(UpdateProfile));
+            return RedirectToAction("Index" , "Home" , new {area="Customer"});
         }
         [HttpPost]
         public async Task<IActionResult> UpdatePassword(UpdateProfileVM updateProfileVM)
