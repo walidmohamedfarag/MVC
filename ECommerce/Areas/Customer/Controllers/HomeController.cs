@@ -56,11 +56,13 @@ namespace ECommerce.Areas.Customer.Controllers
             var product = await productRepo.GetOneAsync(p => p.Id == id, includes: [p => p.Categroy, p => p.Brand], tracked: false, cancellationToken: cancellationToken);
             if (product == null)
                 return View("NotFoundPage");
+            product.Traffic += 1;
+            await productRepo.CommitAsync(cancellationToken);
             var relatedProducts = await productRepo.GetAsync(p => p.Name.Contains(product.Name) && p.Id != id, cancellationToken: cancellationToken);
             return View(new ProductVM 
             {
                 product = product,
-                RealatedProduct = relatedProducts.Skip(0).Take(4).ToList()
+                RealatedProduct = relatedProducts.OrderBy(rp=>rp.Traffic).Skip(0).Take(4).ToList()
             });
         }
         public IActionResult Privacy()
