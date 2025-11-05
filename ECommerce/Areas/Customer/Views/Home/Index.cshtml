@@ -12,6 +12,12 @@
         </div>
     </div>
 </header>
+<head>
+    ...
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+    ...
+</head>
+
 <section class="py-3 filter-bar">
     <div class="container">
         <div class="row" style="background-color: rgba(var(--bs-light-rgb), var(--bs-bg-opacity)) !important;">
@@ -138,7 +144,7 @@
                                         {
                                             <div class="bi-star-fill"></div>
                                         }
-                                    </div>
+                                    </div>            
                                     <!-- Product price-->
                                     <span class="text-muted text-decoration-line-through">@item.Price.ToString("C", new CultureInfo("en-US"))</span>
                                     @((@item.Price - (@item.Price * (@item.Discount / 100))).ToString("C", new CultureInfo("en-US")))
