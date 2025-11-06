@@ -15,6 +15,7 @@ namespace ECommerce.DataAccess
         public DbSet<ProductSubImage> ProductSubImages { get; set; }
         public DbSet<ProductColor> ProductColors { get; set; }
         public DbSet<ApplicationUserOtp> applicationUserOtps { get; set; }
+        public DbSet<Cart> Carts { get; set; }
 
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //    => optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=ECommerce;Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False");
