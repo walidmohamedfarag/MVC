@@ -15,9 +15,11 @@ namespace ECommerce.Areas.Customer.Controllers
             repoCart = _repoCart;
         }
 
-        public IActionResult Cart()
+        public async Task<IActionResult> Cart()
         {
-            return View();
+            var user = await userManager.GetUserAsync(User);
+            var cartProducts = await repoCart.GetAsync(c => c.UserId == user!.Id, includes: [c => c.Product! , c=>c.Product.Brand , c => c.Product.Categroy], cancellationToken: CancellationToken.None);
+            return View(cartProducts);
         }
         [HttpPost]
         public async Task<IActionResult> Cart(int productId, int count , CancellationToken cancellationToken)
@@ -30,7 +32,7 @@ namespace ECommerce.Areas.Customer.Controllers
                 repoCart.Update(productInDB);
                 await repoCart.CommitAsync(cancellationToken);
                 TempData["success-notification"] = "Count Of Product Is Updated Successfully";
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction(nameof(Cart));
             }
             await repoCart.AddAsync(new()
             {
@@ -38,8 +40,9 @@ namespace ECommerce.Areas.Customer.Controllers
                 Count = count,
                 UserId = user!.Id
             } , cancellationToken:cancellationToken);
-            await repoCart.CommitAsync(cancellationToken);  
-            return View();
+            await repoCart.CommitAsync(cancellationToken);
+            TempData["success-notification"] = "The product Add To Cart";
+            return RedirectToAction(nameof(Cart));
         }
     }
 }

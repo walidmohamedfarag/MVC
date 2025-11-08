@@ -25,6 +25,7 @@ namespace ECommerce
             services.AddScoped<IRepositroy<Categroy>, Repositroy<Categroy>>();
             services.AddScoped<IRepositroy<Product>, Repositroy<Product>>();
             services.AddScoped<IRepositroy<ProductSubImage>, Repositroy<ProductSubImage>>();
+            services.AddScoped<IRepositroy<Cart>, Repositroy<Cart>>();
             services.AddScoped<IRepositroy<ProductColor>, Repositroy<ProductColor>>();
             services.AddDbContext<ApplicationDBContext>(option =>
             {
