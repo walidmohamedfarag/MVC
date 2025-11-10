@@ -1,4 +1,6 @@
 ﻿
+using System.Threading.Tasks;
+
 namespace ECommerce.Areas.Customer.Controllers
 {
     [Authorize]
@@ -40,6 +42,32 @@ namespace ECommerce.Areas.Customer.Controllers
             } , cancellationToken:cancellationToken);
             await repoCart.CommitAsync(cancellationToken);
             TempData["success-notification"] = "The product Add To Cart";
+            return RedirectToAction(nameof(Cart));
+        }
+        public async Task<IActionResult> Increment(int productId , CancellationToken cancellationToken)
+        {
+            var user =await userManager.GetUserAsync(User);
+            var productInDB = await repoCart.GetOneAsync(p => p.ProductId == productId && p.UserId == user!.Id);
+            productInDB!.Count += 1;
+            await repoCart.CommitAsync(cancellationToken);
+            return RedirectToAction(nameof(Cart));
+        }
+        public async Task<IActionResult> Decrement(int productId , CancellationToken cancellationToken)
+        {
+            var user =await userManager.GetUserAsync(User);
+            var productInDB = await repoCart.GetOneAsync(p => p.ProductId == productId && p.UserId == user!.Id);
+            if(productInDB!.Count <= 1)
+                return RedirectToAction(nameof(Delete) , new { productInDB.ProductId});
+            productInDB!.Count -= 1;
+            await repoCart.CommitAsync(cancellationToken);
+            return RedirectToAction(nameof(Cart));
+        }
+        public async Task<IActionResult> Delete(int productId, CancellationToken cancellationToken)
+        {
+            var user =await userManager.GetUserAsync(User);
+            var productInDB = await repoCart.GetOneAsync(p => p.ProductId == productId && p.UserId == user!.Id);
+            repoCart.Delete(productInDB!);
+            await repoCart.CommitAsync(cancellationToken);
             return RedirectToAction(nameof(Cart));
         }
     }
