@@ -32,6 +32,7 @@ namespace ECommerce
                 option.UseSqlServer(connection);
             });
             services.AddScoped<IRepositroy<ApplicationUserOtp>, Repositroy<ApplicationUserOtp>>();
+            services.AddScoped<IRepositroy<Promotion>, Repositroy<Promotion>>();
             services.AddScoped<IDBInitializer, DBInitializer>();
         }
     }

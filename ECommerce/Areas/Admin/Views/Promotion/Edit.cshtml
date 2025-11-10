@@ -1,0 +1,50 @@
+﻿@model Promotion
+
+<div class="container">
+    <div class="row mb-3 align-items-center my-3">
+        <div class="col-md-6">
+            <h2 class="display-6">Edit Promotion</h2>
+        </div>
+    </div>
+
+    <div class="row my-3">
+        <div class="col-12">
+            <form method="post">
+                <input type="hidden" name="id" value="@Model.Id" />
+                <div class="mb-3">
+                    <label for="Code" class="form-label">Code</label>
+                    <input class="form-control" name="Code" value="@Model.Code">
+                </div>
+                <div class="mb-3">
+                    <label for="Discount" class="form-label">Discount</label>
+                    <input type="number" class="form-control" name="Discount" value="@Model.Discount">
+                </div>
+                <div class="mb-3">
+                    <label for="ValidTo" class="form-label">ValidTo</label>
+                    <input type="datetime-local" class="form-control" name="ValidTo" value="@Model.ValidTo">
+                </div>
+                <div class="mb-3">
+                    <label for="ProductId" class="form-label">Product</label>
+                    <select name="ProductId" class="form-select">
+                        @foreach (var item in ViewBag.products)
+                        {
+                            if (item.Id == Model.ProductId)
+                            {
+                                <option value="@item.Id" selected>@item.Name</option>
+                            }
+                            else
+                            {
+                                <option value="@item.Id">@item.Name</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial">
+}
