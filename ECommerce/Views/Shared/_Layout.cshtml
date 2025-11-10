@@ -6,6 +6,7 @@
     <title>@ViewData["Title"] - ECommerce</title>
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="~/css/client/styles.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ECommerce.styles.css" asp-append-version="true" />
@@ -15,7 +16,6 @@
     <header>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container px-4 px-lg-5">
-                @* <a class="navbar-brand" href="#!">Start Bootstrap</a> *@
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4 flex-grow-1">
@@ -31,52 +31,52 @@
                         </li>
                         <li class="nav-item flex-grow-1"><a class="nav-link active" aria-current="page" href="/Admin/Admin/Index">Admin</a></li>
                     </ul>
-                    <ul>
-                        <li>
-                            <form class="d-flex">
-                                <a class="btn btn-outline-dark" href="/Customer/Cart/Cart">
-                                    <i class="bi-cart-fill me-1"></i>
-                                    Cart
-                                    <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
-                                </a>
-                            </form>
-                        </li>
-                    </ul>
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="/Identity/Profile/UpdateProfile">@User.Identity!.Name</a></li>
-                    </ul>
+                    <form class="d-flex">
+                        <a class="btn btn-outline-dark" href="/Customer/Cart/Cart">
+                            <i class="bi-cart-fill me-1"></i>
+                            Cart
+                            <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
+                        </a>
+                    </form>
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul class="navbar-nav me-auto mb-2 ">
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">About</a>
-                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    @if (User.Identity.IsAuthenticated)
-                                    {
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                            @if (!User.Identity!.IsAuthenticated)
+                            {
+                                <li class="nav-item"><a class="nav-link" href="/Identity/Register/Login">Login</a></li>
+                                <li class="nav-item"><a class="nav-link" href="/Identity/Register/Register">Register</a></li>
+                            }
+                            else
+                            {
+                                <li class="nav-item"><a class="nav-link" href="/Identity/Profile">@User.Identity.Name</a></li>
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">About</a>
+                                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                            @if (User.Identity.IsAuthenticated)
+                                            {
 
-                                        <li><a class="dropdown-item" href="/Identity/Profile/UpdateProfile">Update Your Profile</a></li>
-                                    }
-                                    <li><hr class="dropdown-divider" /></li>
-                                    @if (!User.Identity.IsAuthenticated)
-                                    {
+                                                <li><a class="dropdown-item" href="/Identity/Profile/UpdateProfile">Update Your Profile</a></li>
+                                            }
+                                            <li><hr class="dropdown-divider" /></li>
+                                            @if (!User.Identity.IsAuthenticated)
+                                            {
 
-                                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="/Identity/Register/Register"> Register</a></li>
-                                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="/Identity/Register/Login"> Login</a></li>
-                                    }
-                                    else
-                                    {
+                                                <li class="nav-item"><a class="nav-link active" aria-current="page" href="/Identity/Register/Register"> Register</a></li>
+                                                <li class="nav-item"><a class="nav-link active" aria-current="page" href="/Identity/Register/Login"> Login</a></li>
+                                            }
+                                            else
+                                            {
 
-                                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="/Identity/Profile/Logout">Logout</a></li>
-                                    }
-                                </ul>
-                            </li>
+                                                <li class="nav-item"><a class="nav-link active" aria-current="page" href="/Identity/Profile/Logout">Logout</a></li>
+                                            }
+                                        </ul>
+                                    </li>
+                            }
                         </ul>
                     </div>
                 </div>
             </div>
         </nav>
-
     </header>
-
     <main role="main" class="pb-3">
         @RenderBody()
     </main>

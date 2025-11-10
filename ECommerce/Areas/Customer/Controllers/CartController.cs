@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
-
+﻿
 namespace ECommerce.Areas.Customer.Controllers
 {
     [Authorize]
