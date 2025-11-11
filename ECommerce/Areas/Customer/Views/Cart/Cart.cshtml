@@ -39,7 +39,8 @@
                                     <a asp-action="Decrement" asp-route-productId="@item.ProductId" class="btn btn-outline-secondary">-</a>
                                 </div>
                                 <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
-                                    <h5 class="mb-0">@((item.Product.Price * item.Count).ToString("c" , new CultureInfo("en-US")))</h5>
+
+                                    <h5 class="mb-0">@item.Price.ToString("c" , new CultureInfo("en-US"))</h5>
                                 </div>
                                 <div class="col-md-1 col-lg-1 col-xl-1 text-end">
                                     <a asp-action="Delete" asp-route-productId="@item.ProductId" class="btn btn-outline-danger">Delete</a>
@@ -51,12 +52,12 @@
 
                 <div class="card mb-4">
                     <div class="card-body p-4 d-flex flex-row">
-                        <form asp-action="Index">
+                        <form asp-action="Cart" method="get">
                             <div data-mdb-input-init class="form-outline flex-fill">
                                 <input name="code" type="text" id="form1" class="form-control form-control-lg" />
                                 <label class="form-label" for="form1">Discound code</label>
                             </div>
-                            <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-warning btn-lg ms-3">Apply</button>
+                            <button type="submit" asp-route-code="code" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-warning btn-lg ms-3">Apply</button>
                         </form>
                     </div>
                 </div>
@@ -71,3 +72,8 @@
         </div>
     </div>
 </section>
+@section Scripts {
+
+    <partial name="_NotificationPartial">
+
+}
