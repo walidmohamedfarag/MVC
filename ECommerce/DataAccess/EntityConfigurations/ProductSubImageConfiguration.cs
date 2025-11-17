@@ -1,7 +1,6 @@
-﻿
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace ECommerce.DataAccess
+namespace ECommerce.DataAccess.EntityConfigurations
 {
     public class ProductSubImageConfiguration : IEntityTypeConfiguration<ProductSubImage>
     {

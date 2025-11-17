@@ -4,6 +4,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>63a6dbe3-6783-493e-8c04-fa2591b316b7</UserSecretsId>
   </PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Mapster" Version="7.4.0" />
@@ -15,6 +16,7 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
+		<PackageReference Include="Stripe.net" Version="49.2.0" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="wwwroot\Images\Admin\BrandImg\" />

@@ -1,6 +1,8 @@
 ﻿
 
 
+using ECommerce.DataAccess.EntityConfigurations;
+
 namespace ECommerce.DataAccess
 {
     public class ApplicationDBContext : IdentityDbContext<ApplicationUser>
